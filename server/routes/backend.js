@@ -21,7 +21,7 @@ router.get('/getCategoryArticle',(req,res)=>{
     //将中文参数解码
     let param=decodeURIComponent(req.query.category);
     let sql=db.queryCategory(param);
-    db.Query(sql).then(data=>{
+    db.Query(sql, [param]).then(data=>{
         //如果成功，发送code200,加上data
         res.send({"code":"200","data":data});
         // console.log('根据文章分类获取文章列表');
@@ -39,7 +39,7 @@ router.get('/getOneArticle',(req,res)=>{
     let param=req.query.articleId;
     let sql=db.queryOneArticle(param);
 
-    db.Query(sql).then(data=>{
+    db.Query(sql, [param]).then(data=>{
         console.log(data);
         res.send({"code":"200","data":data});
         console.log('完成');
@@ -57,7 +57,7 @@ router.post('/saveArticle',(req,res)=>{
     if(id){
         console.log('id存在，执行更新操作！')
         let sql=db.updateArticle(passage);
-        db.Query(sql).then(data=>{
+        db.Query(sql, [passage]).then(data=>{
             res.send({"code":"200","data":"更新成功！"});
         },err=>{
             res.send({"code":"400"});
@@ -67,7 +67,7 @@ router.post('/saveArticle',(req,res)=>{
     // 如果req.body的id不存在，说明是一篇新的文章,执行插入操作;
     else{
         let sql=db.createArticle(passage);
-        db.Query(sql).then(data=>{
+        db.Query(sql, [passage]).then(data=>{
             res.send({"code":"200","data":data});
         },err=>{
             res.send({"code":"400"});
@@ -81,7 +81,7 @@ router.post('/saveArticle',(req,res)=>{
 router.post('/delArticle',(req,res)=>{
     let id=req.body.id;
     let sql=db.delArticle(id);
-    db.Query(sql).then(data=>{
+    db.Query(sql, [id]).then(data=>{
         res.send({"code":"200","data":data});
     },err=>{
         res.send({"code":"400"});
@@ -107,7 +107,7 @@ router.post('/delComment',(req,res)=>{
     let id=req.body.id;
     let sql=db.delComment(id);
     console.log(sql);
-    db.Query(sql).then(data=>{
+    db.Query(sql, [id]).then(data=>{
         res.send({"code":"200","data":data});
     },err=>{
         res.send({"code":"400"});
@@ -121,7 +121,7 @@ router.post('/changeState',(req,res)=>{
     let state=req.body.state;
     let sql=db.changeState(id,state);
 
-    db.Query(sql).then(data=>{
+    db.Query(sql, [id, state]).then(data=>{
         res.send({"code":"200","data":data});
     },err=>{
         res.send({"code":"400"});

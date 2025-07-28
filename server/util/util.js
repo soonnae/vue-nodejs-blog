@@ -29,7 +29,7 @@ const crypto=require('crypto');
 //用户密码加盐加密验证
 function encrypt(str){
     let salt='this is salt';
-    let obj=crypto.createHash('md5');
+    let obj=crypto.createHash('sha256');
     obj.update(str+salt);
     let password=obj.digest('hex');
     return password;
@@ -38,7 +38,7 @@ function encrypt(str){
 //jsonwebtoken加密token
 function encodeJwt(){
     let content ={msg:"this is info"}; // 要生成token的主题信息
-    let secretOrPrivateKey="mykey" ;// 这是加密的key（密钥） 
+    let secretOrPrivateKey=crypto.randomBytes(64).toString('hex'); // 生成一个随机的密钥
     let token = jwt.sign(content, secretOrPrivateKey, {
                         expiresIn: 60*60  // 24小时过期 60*60*24,可以设置为10秒来测试JWT是否生效
                     });
