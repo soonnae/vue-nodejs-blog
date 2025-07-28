@@ -21,7 +21,7 @@ router.get('/oneArticle',(req,res)=>{
     let id=req.query.id;
     let sql=db.oneArticleFront(id);
     console.log('获取单篇文章');
-    db.Query(sql).then(data=>{
+    db.Query(sql, [id]).then(data=>{
         res.send({"code":"200","data":data[0]});
     },err=>{
         res.send({"code":"400","err":"服务器开小差了"});
@@ -33,7 +33,7 @@ router.get('/prePassage',(req,res)=>{
     let id=req.query.id;
     let sql=db.prePsgFront(id);
     console.log('获取上一篇文章');
-    db.Query(sql).then(data=>{
+    db.Query(sql, [id]).then(data=>{
         if(data[0]){
             res.send({"code":"200","data":data[0]}); 
         }else{
@@ -49,7 +49,7 @@ router.get('/nextPassage',(req,res)=>{
     let id=req.query.id;
     let sql=db.nextPsgFront(id);
     console.log('获取下一篇文章');
-    db.Query(sql).then(data=>{
+    db.Query(sql, [id]).then(data=>{
         if(data[0]){
             res.send({"code":"200","data":data[0]}); 
         }else{
@@ -62,9 +62,10 @@ router.get('/nextPassage',(req,res)=>{
 
 //获取分类文章的接口
 router.get('/categoryArticle',(req,res)=>{
-    let sql=db.categoryArticleFront(req.query.category);
+    let category=req.query.category;
+    let sql=db.categoryArticleFront(category);
     console.log('前端获取分类文章');
-    db.Query(sql).then(data=>{
+    db.Query(sql, [category]).then(data=>{
         res.send({"code":"200","data":data});
     },err=>{
         res.send({"code":"服务器开小差了！"});
@@ -98,7 +99,7 @@ router.get('/tagPassages',(req,res)=>{
     let tag=req.query.tag;
     let sql=db.tagPassagesFront(tag);
     console.log('前端根据标签获取文章列表');
-    db.Query(sql).then(data=>{
+    db.Query(sql, [tag]).then(data=>{
         console.log(data);
         res.send({"code":"200","data":data});
     },err=>{
@@ -111,7 +112,7 @@ router.get('/searchPassages',(req,res)=>{
     let str=req.query.str;
     let sql=db.searchPassageFront(str);
     console.log('前端根据关键字获取文章列表');
-    db.Query(sql).then(data=>{
+    db.Query(sql, [str]).then(data=>{
         console.log(data);
         res.send({"code":"200","data":data});
     },err=>{
@@ -124,7 +125,7 @@ router.post('/makeComment',(req,res)=>{
     let sql=db.makeComment(comment);
     console.log('添加评论');
 
-    db.Query(sql).then(data=>{
+    db.Query(sql, [comment]).then(data=>{
         res.send({"code":"200","data":"添加评论成功！"});
     },err=>{
         res.send({"code":"400","err":"服务器炸了"});
@@ -136,7 +137,7 @@ router.get('/getComments',(req,res)=>{
     let id=req.query.id;
     let sql=db.getComments(id);
     console.log('获取评论');
-    db.Query(sql).then(data=>{
+    db.Query(sql, [id]).then(data=>{
         res.send({"code":"200","data":data});
     },err=>{
         res.send({"code":"400","err":"服务器炸了"});

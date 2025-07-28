@@ -1,4 +1,3 @@
-
 let express = require('express');
 const router = express.Router();
 //引入工具文件
@@ -17,9 +16,9 @@ router.post('/login',(req,res)=>{
   console.log(password);
   //生成一个token
   let token=util.encodeJwt();
-  let sql=db.login(account,password);
-  //生成以一个token
-  db.Query(sql).then(data=>{
+  // Use parameterized query to prevent SQL injection
+  let sql = 'SELECT * FROM users WHERE account = ? AND password = ?';
+  db.Query(sql, [account, password]).then(data=>{
     //在数据控能够查找到结果时，将token发送给前台
     if(data.length){
       console.log('用户登录成功！');
@@ -58,8 +57,9 @@ router.post('/changeInfo',upload, (req, res)=> {
       url ='http://localhost:8081/img/user/'+req.file.filename;
     }
 
-    let sql=db.changeInfo(id,params,url);
-    db.Query(sql).then(data=>{
+    // Use parameterized query to prevent SQL injection
+    let sql = 'UPDATE users SET info = ?, imageUrl = ? WHERE id = ?';
+    db.Query(sql, [params, url, id]).then(data=>{
       console.log('图片上传成功');
       res.send({"code":"200"});
     },err=>{

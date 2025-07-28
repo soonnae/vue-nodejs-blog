@@ -1,4 +1,3 @@
-
 // 引入express
 let express = require('express');
 // 引入路径处理模块
@@ -32,6 +31,8 @@ app.use(bodyParser.json({ limit: '10mb' }));
 //解析 application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({limit:'50mb',extended: true }))
 
+// Disable X-Powered-By header
+app.disable('x-powered-by');
 
 //使用expressJWT对路由进行token验证
 let secretOrPrivateKey = "mykey"  //私钥 校验token时要使用
@@ -54,7 +55,7 @@ app.use('/*',function(err, req, res, next) {
         if (err.name === 'UnauthorizedError') { 
             console.log('身份认证不通过');
             //如果身份验证不通过，则发送错误信息提示，前端收到该提示后，在router拦截器里面设置相应对应办法
-            res.send({"code":'401',"err":err});
+            res.status(401).send({"code":'401',"err":"Unauthorized access"});
         }else{
             next();   
         }
