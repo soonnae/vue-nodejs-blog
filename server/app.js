@@ -1,4 +1,3 @@
-
 // 引入express
 let express = require('express');
 // 引入路径处理模块
@@ -34,10 +33,14 @@ app.use(bodyParser.urlencoded({limit:'50mb',extended: true }))
 
 
 //使用expressJWT对路由进行token验证
-let secretOrPrivateKey = "mykey"  //私钥 校验token时要使用
+let secretOrPrivateKey = process.env.JWT_SECRET || "default_secret_key";  //私钥 校验token时要使用
 app.use(expressJWT({
     secret: secretOrPrivateKey,
-    algorithms:['HS256']   
+    algorithms:['HS256'],
+    isRevoked: async (req, payload, done) => {
+        // Implement token revocation logic here
+        done(null, false); // Change to true if token is revoked
+    }
 }).unless({
     path: ['/api/user/login','/api/user/getInfo','/ueditor/ue']  //这里可以设置保护路由，login就不用进行token验证
 }));
